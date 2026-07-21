@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Eye, EyeOff, Shield, Hospital } from "lucide-react";
+import { Eye, EyeOff, Shield } from "lucide-react";
 
 interface LoginPageProps {
   onLogin: (role: string) => void;
 }
+
+const LOGO_URL = "https://www.hvdeh.org/_next/image?url=%2Flogo.jpg&w=1080&q=75";
 
 const DEMO_USERS = [
   { username: "nabh_coordinator", password: "nabh123", role: "NABH Coordinator" },
@@ -26,36 +28,38 @@ export function LoginPage({ onLogin }: LoginPageProps) {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 600));
     const user = DEMO_USERS.find(u => u.username === username && u.password === password);
     if (user) {
       onLogin(user.role);
     } else {
-      setError("Invalid credentials. Try: nabh_coordinator / nabh123");
+      setError("Invalid credentials. Try demo accounts below.");
     }
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: "linear-gradient(135deg, #0066CC 0%, #004499 50%, #002266 100%)" }}>
+    <div className="min-h-screen flex" style={{ background: "linear-gradient(135deg, #0a1628 0%, #0066CC 50%, #003388 100%)" }}>
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center p-16 text-white">
         <div className="max-w-md">
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
-              <Hospital size={36} className="text-white" />
-            </div>
+            <img
+              src={LOGO_URL}
+              alt="H V Desai Eye Hospital Logo"
+              style={{ width: "64px", height: "64px", borderRadius: "16px", objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)", background: "white", padding: "2px", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" }}
+            />
             <div>
-              <h1 className="text-white" style={{ fontSize: "28px", fontWeight: 700, lineHeight: 1.2 }}>MediCare Hospital</h1>
-              <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px" }}>Quality Management System</p>
+              <h1 className="text-white" style={{ fontSize: "26px", fontWeight: 800, lineHeight: 1.2 }}>PBMA's H V Desai Eye Hospital</h1>
+              <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "14px", fontWeight: 500 }}>NABH Quality & Accreditation System</p>
             </div>
           </div>
-          <h2 className="text-white mb-4" style={{ fontSize: "36px", fontWeight: 700, lineHeight: 1.3 }}>
-            NABH Audit<br />Management Platform
+          <h2 className="text-white mb-4" style={{ fontSize: "34px", fontWeight: 800, lineHeight: 1.3 }}>
+            NABH Audit & Quality<br />Management Platform
           </h2>
-          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "16px", lineHeight: 1.7, marginBottom: "40px" }}>
-            Enterprise-grade internal audit management for NABH accreditation.
-            Track compliance, manage non-conformities, and drive continuous quality improvement.
+          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7, marginBottom: "36px" }}>
+            Enterprise-grade internal audit management complying with NABH 5th Edition Standards.
+            Monitor departmental performance, track non-conformities, and manage CAPA workflows.
           </p>
           <div className="grid grid-cols-2 gap-4">
             {[
@@ -64,9 +68,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               { label: "Compliance Score", value: "87%" },
               { label: "Active Audits", value: "12" },
             ].map(stat => (
-              <div key={stat.label} className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)" }}>
-                <div style={{ fontSize: "28px", fontWeight: 700, color: "#fff" }}>{stat.value}</div>
-                <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>{stat.label}</div>
+              <div key={stat.label} className="rounded-xl p-4" style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", border: "1px solid rgba(255,255,255,0.15)" }}>
+                <div style={{ fontSize: "26px", fontWeight: 800, color: "#fff" }}>{stat.value}</div>
+                <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.75)" }}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -76,30 +80,28 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* Right Panel - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8" style={{ background: "#f8fafc" }}>
         <div className="w-full max-w-md">
-          {/* Mobile logo */}
+          {/* Mobile Header */}
           <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: "#0066CC" }}>
-              <Hospital size={24} className="text-white" />
-            </div>
+            <img src={LOGO_URL} alt="HVDEH Logo" style={{ width: "44px", height: "44px", borderRadius: "12px", objectFit: "cover" }} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: "18px", color: "#1e293b" }}>MediCare Hospital</div>
-              <div style={{ fontSize: "12px", color: "#64748b" }}>Quality Management System</div>
+              <div style={{ fontWeight: 800, fontSize: "16px", color: "#1e293b" }}>H V Desai Eye Hospital</div>
+              <div style={{ fontSize: "12px", color: "#64748b" }}>NABH Quality System</div>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
             <div className="mb-8">
               <div className="flex items-center gap-2 mb-2">
-                <Shield size={20} style={{ color: "#0066CC" }} />
-                <span style={{ fontSize: "13px", color: "#0066CC", fontWeight: 600 }}>SECURE LOGIN</span>
+                <Shield size={18} style={{ color: "#0066CC" }} />
+                <span style={{ fontSize: "12px", color: "#0066CC", fontWeight: 700, letterSpacing: "0.5px" }}>SECURE LOGIN PORTAL</span>
               </div>
-              <h2 style={{ fontSize: "26px", fontWeight: 700, color: "#1e293b" }}>Welcome Back</h2>
-              <p style={{ color: "#64748b", fontSize: "14px", marginTop: "4px" }}>Sign in to access your NABH audit dashboard</p>
+              <h2 style={{ fontSize: "24px", fontWeight: 800, color: "#1e293b" }}>Welcome Back</h2>
+              <p style={{ color: "#64748b", fontSize: "13px", marginTop: "4px" }}>Sign in to access your NABH audit dashboard</p>
             </div>
 
-            <form onSubmit={handleLogin} className="space-y-5">
+            <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label style={{ fontSize: "13px", fontWeight: 600, color: "#374151", display: "block", marginBottom: "6px" }}>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: "#374151", display: "block", marginBottom: "6px" }}>
                   Username
                 </label>
                 <input
@@ -110,7 +112,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   required
                   style={{
                     width: "100%", padding: "10px 14px", border: "1.5px solid #e2e8f0",
-                    borderRadius: "8px", fontSize: "14px", outline: "none",
+                    borderRadius: "8px", fontSize: "13px", outline: "none",
                     background: "#f8fafc", color: "#1e293b", boxSizing: "border-box"
                   }}
                   onFocus={e => e.target.style.borderColor = "#0066CC"}
@@ -119,7 +121,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               </div>
 
               <div>
-                <label style={{ fontSize: "13px", fontWeight: 600, color: "#374151", display: "block", marginBottom: "6px" }}>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: "#374151", display: "block", marginBottom: "6px" }}>
                   Password
                 </label>
                 <div style={{ position: "relative" }}>
@@ -131,7 +133,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                     required
                     style={{
                       width: "100%", padding: "10px 42px 10px 14px", border: "1.5px solid #e2e8f0",
-                      borderRadius: "8px", fontSize: "14px", outline: "none",
+                      borderRadius: "8px", fontSize: "13px", outline: "none",
                       background: "#f8fafc", color: "#1e293b", boxSizing: "border-box"
                     }}
                     onFocus={e => e.target.style.borderColor = "#0066CC"}
@@ -153,17 +155,17 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={e => setRememberMe(e.target.checked)}
-                    style={{ accentColor: "#0066CC", width: "15px", height: "15px" }}
+                    style={{ accentColor: "#0066CC", width: "14px", height: "14px" }}
                   />
-                  <span style={{ fontSize: "13px", color: "#64748b" }}>Remember me</span>
+                  <span style={{ fontSize: "12px", color: "#64748b" }}>Remember me</span>
                 </label>
-                <button type="button" style={{ fontSize: "13px", color: "#0066CC", fontWeight: 500, background: "none", border: "none", cursor: "pointer" }}>
+                <button type="button" style={{ fontSize: "12px", color: "#0066CC", fontWeight: 600, background: "none", border: "none", cursor: "pointer" }}>
                   Forgot Password?
                 </button>
               </div>
 
               {error && (
-                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "8px", padding: "10px 14px", fontSize: "13px", color: "#dc2626" }}>
+                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "8px", padding: "10px 14px", fontSize: "12px", color: "#dc2626" }}>
                   {error}
                 </div>
               )}
@@ -174,21 +176,21 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 style={{
                   width: "100%", padding: "12px", background: loading ? "#94a3b8" : "#0066CC",
                   color: "white", border: "none", borderRadius: "8px", cursor: loading ? "not-allowed" : "pointer",
-                  fontWeight: 600, fontSize: "15px", transition: "background 0.2s"
+                  fontWeight: 700, fontSize: "14px", transition: "all 0.2s ease"
                 }}
               >
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? "Authenticating..." : "Sign In to Portal"}
               </button>
             </form>
 
-            <div style={{ marginTop: "24px", padding: "16px", background: "#f0f9ff", borderRadius: "10px", border: "1px solid #bae6fd" }}>
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "#0369a1", marginBottom: "8px" }}>Demo Credentials</div>
-              <div className="grid grid-cols-2 gap-1">
+            <div style={{ marginTop: "20px", padding: "14px", background: "#f0f9ff", borderRadius: "10px", border: "1px solid #bae6fd" }}>
+              <div style={{ fontSize: "11px", fontWeight: 700, color: "#0369a1", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.5px" }}>Quick Demo Sign In</div>
+              <div className="grid grid-cols-2 gap-1.5">
                 {DEMO_USERS.slice(0, 4).map(u => (
                   <button
                     key={u.username}
                     onClick={() => { setUsername(u.username); setPassword(u.password); }}
-                    style={{ fontSize: "11px", color: "#0369a1", background: "white", border: "1px solid #bae6fd", borderRadius: "6px", padding: "4px 8px", cursor: "pointer", textAlign: "left" }}
+                    style={{ fontSize: "11px", color: "#0369a1", background: "white", border: "1px solid #bae6fd", borderRadius: "6px", padding: "5px 8px", cursor: "pointer", textAlign: "left", fontWeight: 600 }}
                   >
                     {u.role}
                   </button>
@@ -197,8 +199,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </div>
           </div>
 
-          <p style={{ textAlign: "center", marginTop: "24px", fontSize: "13px", color: "#94a3b8" }}>
-            © 2026 MediCare Hospital. NABH Quality Management System v3.0
+          <p style={{ textAlign: "center", marginTop: "20px", fontSize: "12px", color: "#94a3b8" }}>
+            © 2026 PBMA's H V Desai Eye Hospital. NABH Accreditation Portal
           </p>
         </div>
       </div>

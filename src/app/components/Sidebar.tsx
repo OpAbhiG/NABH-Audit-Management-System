@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, Building2, ClipboardList, BookOpen, AlertTriangle,
   Wrench, BarChart3, ChevronLeft, ChevronRight, LogOut,
-  Hospital, User, Bell, TrendingUp, Settings, X, CheckCircle2, AlertCircle, Info
+  User, Bell, TrendingUp, Settings, X
 } from "lucide-react";
 import { useAudit } from "../context/AuditContext";
 import { toast } from "sonner";
@@ -23,6 +23,8 @@ interface SidebarProps {
   userRole: string;
   onLogout: () => void;
 }
+
+const LOGO_URL = "https://www.hvdeh.org/_next/image?url=%2Flogo.jpg&w=1080&q=75";
 
 export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
@@ -50,34 +52,39 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
         background: "#0a1628",
         display: "flex",
         flexDirection: "column",
-        transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
         flexShrink: 0,
         position: "relative",
         zIndex: 10,
-        boxShadow: "4px 0 20px rgba(0,0,0,0.1)",
+        boxShadow: "4px 0 20px rgba(0,0,0,0.12)",
       }}
     >
       {/* Header Logo */}
       <div style={{
-        padding: collapsed ? "20px 16px" : "20px 20px",
+        padding: collapsed ? "20px 16px" : "20px 18px",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
         display: "flex",
         alignItems: "center",
         gap: "12px",
         overflow: "hidden",
       }}>
-        <div style={{
-          width: "36px", height: "36px", borderRadius: "10px",
-          background: "linear-gradient(135deg, #0066CC 0%, #004499 100%)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0, boxShadow: "0 4px 12px rgba(0,102,204,0.3)"
-        }}>
-          <Hospital size={20} color="white" />
-        </div>
+        <img
+          src={LOGO_URL}
+          alt="H V Desai Eye Hospital Logo"
+          style={{
+            width: "36px", height: "36px", borderRadius: "50%",
+            objectFit: "cover", flexShrink: 0, border: "2px solid #0066CC",
+            background: "white", padding: "1px", boxShadow: "0 4px 12px rgba(0,102,204,0.3)"
+          }}
+          onError={(e) => {
+            // Fallback if image fails to load
+            (e.target as HTMLElement).style.display = "none";
+          }}
+        />
         {!collapsed && (
           <div style={{ overflow: "hidden" }}>
-            <div style={{ fontSize: "13px", fontWeight: 700, color: "white", whiteSpace: "nowrap" }}>MediCare Hospital</div>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", whiteSpace: "nowrap" }}>NABH QMS v3.0 • Live</div>
+            <div style={{ fontSize: "13px", fontWeight: 700, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>HV Desai Eye Hospital</div>
+            <div style={{ fontSize: "10px", color: "#60a5fa", fontWeight: 600, whiteSpace: "nowrap" }}>NABH Quality System v3.0</div>
           </div>
         )}
       </div>
@@ -92,7 +99,7 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
           display: "flex", alignItems: "center", justifyContent: "center",
           cursor: "pointer", zIndex: 20, color: "white",
           boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-          transition: "transform 0.15s"
+          transition: "transform 0.2s"
         }}
         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
@@ -147,16 +154,16 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
         })}
       </nav>
 
-      {/* User Footer */}
+      {/* User Footer (Left Bottom) */}
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "12px" }}>
         {!collapsed && (
           <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", borderRadius: "10px", background: "rgba(255,255,255,0.05)", marginBottom: "8px" }}>
-            <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#0066CC", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <User size={16} color="white" />
+            <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#0066CC", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700, color: "white", fontSize: "12px" }}>
+              {userRole.slice(0, 2).toUpperCase()}
             </div>
             <div style={{ overflow: "hidden" }}>
               <div style={{ fontSize: "12px", fontWeight: 600, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userRole}</div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>Active Session</div>
+              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>Logged In User</div>
             </div>
           </div>
         )}
@@ -195,7 +202,7 @@ const PAGE_TITLES: Record<Page, string> = {
   management: "Management View",
 };
 
-export function TopBar({ page, userRole }: TopBarProps) {
+export function TopBar({ page }: TopBarProps) {
   const [showNotifs, setShowNotifs] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { notifications, markNotificationRead, exportDataToCSV } = useAudit();
@@ -211,10 +218,10 @@ export function TopBar({ page, userRole }: TopBarProps) {
     }}>
       <div>
         <h1 style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b", margin: 0 }}>{PAGE_TITLES[page]}</h1>
-        <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 500 }}>{today} • NABH 5th Edition Standards</div>
+        <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 500 }}>{today} • NABH 5th Edition Accreditation</div>
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
         {/* Notifications Button */}
         <div style={{ position: "relative" }}>
           <button
@@ -276,19 +283,25 @@ export function TopBar({ page, userRole }: TopBarProps) {
           <Settings size={16} />
         </button>
 
-        {/* User Badge */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", paddingLeft: "8px", borderLeft: "1px solid #e2e8f0" }}>
-          <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#0066CC", display: "flex", alignItems: "center", justifyContent: "center", color: "white", fontWeight: 700, fontSize: "13px" }}>
-            {userRole.slice(0, 2).toUpperCase()}
-          </div>
+        {/* Top Right Hospital Logo & Branding Avatar (Replaced duplicate userRole) */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", paddingLeft: "12px", borderLeft: "1px solid #e2e8f0" }}>
+          <img
+            src={LOGO_URL}
+            alt="H V Desai Eye Hospital Logo"
+            style={{
+              width: "36px", height: "36px", borderRadius: "50%",
+              objectFit: "cover", border: "2px solid #0066CC", background: "white", padding: "1px",
+              boxShadow: "0 2px 8px rgba(0,102,204,0.2)"
+            }}
+          />
           <div>
-            <div style={{ fontSize: "12px", fontWeight: 600, color: "#1e293b" }}>{userRole}</div>
-            <div style={{ fontSize: "10px", color: "#64748b" }}>MediCare Quality System</div>
+            <div style={{ fontSize: "12px", fontWeight: 700, color: "#1e293b", lineHeight: 1.2 }}>H V Desai Eye Hospital</div>
+            <div style={{ fontSize: "10px", color: "#0066CC", fontWeight: 600 }}>NABH Quality System</div>
           </div>
         </div>
       </div>
 
-      {/* Quick Settings Modal */}
+      {/* Settings Modal */}
       {showSettings && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
           <div style={{ background: "white", borderRadius: "16px", width: "450px", padding: "24px", boxShadow: "0 20px 40px rgba(0,0,0,0.2)" }}>
@@ -310,12 +323,12 @@ export function TopBar({ page, userRole }: TopBarProps) {
               </div>
 
               <div style={{ background: "#f8fafc", padding: "12px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
-                <div style={{ fontSize: "13px", fontWeight: 600, color: "#1e293b" }}>NABH Standards Version</div>
-                <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>Active Edition: <strong>NABH 5th Edition Accreditation Standard</strong></div>
+                <div style={{ fontSize: "13px", fontWeight: 600, color: "#1e293b" }}>Hospital Organization</div>
+                <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>PBMA's H V Desai Eye Hospital • NABH Accredited</div>
               </div>
             </div>
 
-            <button onClick={() => { setShowSettings(false); toast.success("Settings saved"); }} style={{ width: "100%", marginTop: "20px", padding: "10px", background: "#0066CC", color: "white", border: "none", borderRadius: "8px", fontWeight: 600, cursor: "pointer" }}>
+            <button onClick={() => { setShowSettings(false); toast.success("Settings updated"); }} style={{ width: "100%", marginTop: "20px", padding: "10px", background: "#0066CC", color: "white", border: "none", borderRadius: "8px", fontWeight: 600, cursor: "pointer" }}>
               Close Settings
             </button>
           </div>
