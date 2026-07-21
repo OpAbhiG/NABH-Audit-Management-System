@@ -8,6 +8,18 @@ const STORAGE_KEYS = {
   NOTIFICATIONS: "nabh_hospital_notifications_v2",
 };
 
+/**
+ * Security Input Sanitizer to strip potentially unsafe HTML script tags
+ */
+export function sanitizeInput(input: string): string {
+  if (!input) return "";
+  return input
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 const SEED_DEPARTMENTS: Department[] = [
   { id: 1, name: "OPD", head: "Dr. Rajesh Kumar", score: 92, prev: 88, status: "Excellent", staff: 45, lastAudit: "2026-06-01", nextAudit: "2026-07-01", nc: 2, category: "Clinical" },
   { id: 2, name: "IPD", head: "Dr. Priya Sharma", score: 85, prev: 82, status: "Good", staff: 80, lastAudit: "2026-06-05", nextAudit: "2026-07-05", nc: 5, category: "Clinical" },
@@ -103,13 +115,13 @@ export const AuditService = {
     const depts = await this.getDepartments();
     let updated: Department[];
     if (dept.id) {
-      updated = depts.map(d => (d.id === dept.id ? ({ ...d, ...dept } as Department) : d));
+      updated = depts.map(d => (d.id === dept.id ? ({ ...d, ...dept, name: sanitizeInput(dept.name || d.name), head: sanitizeInput(dept.head || d.head) } as Department) : d));
     } else {
       const newId = Math.max(0, ...depts.map(d => d.id)) + 1;
       const newDept: Department = {
         id: newId,
-        name: dept.name || "New Department",
-        head: dept.head || "Unassigned",
+        name: sanitizeInput(dept.name || "New Department"),
+        head: sanitizeInput(dept.head || "Unassigned"),
         score: dept.score || 80,
         prev: Math.max(50, (dept.score || 80) - 3),
         status: (dept.score || 80) >= 90 ? "Excellent" : (dept.score || 80) >= 80 ? "Good" : (dept.score || 80) >= 70 ? "Needs Improvement" : "Critical",
@@ -139,19 +151,25 @@ export const AuditService = {
     const audits = await this.getAudits();
     let updated: Audit[];
     if (audit.id && audits.some(a => a.id === audit.id)) {
-      updated = audits.map(a => (a.id === audit.id ? ({ ...a, ...audit } as Audit) : a));
+      updated = audits.map(a => (a.id === audit.id ? ({
+        ...a,
+        ...audit,
+        name: sanitizeInput(audit.name || a.name),
+        auditor: sanitizeInput(audit.auditor || a.auditor),
+        scope: sanitizeInput(audit.scope || a.scope || ""),
+      } as Audit) : a));
     } else {
       const newAudit: Audit = {
         id: audit.id || `AUD-${String(audits.length + 1).padStart(3, "0")}`,
-        name: audit.name || "Untitled Audit",
+        name: sanitizeInput(audit.name || "Untitled Audit"),
         dept: audit.dept || "General",
-        auditor: audit.auditor || "Lead Auditor",
+        auditor: sanitizeInput(audit.auditor || "Lead Auditor"),
         date: audit.date || new Date().toISOString().slice(0, 10),
         chapter: audit.chapter || "Care of Patients",
         priority: audit.priority || "Medium",
         status: audit.status || "Scheduled",
         score: audit.score !== undefined ? audit.score : null,
-        scope: audit.scope || "",
+        scope: sanitizeInput(audit.scope || ""),
         answers: audit.answers || [],
         createdAt: new Date().toISOString(),
       };
@@ -175,15 +193,21 @@ export const AuditService = {
     const ncs = await this.getNonConformities();
     let updated: NonConformity[];
     if (nc.id && ncs.some(n => n.id === nc.id)) {
-      updated = ncs.map(n => (n.id === nc.id ? ({ ...n, ...nc } as NonConformity) : n));
+      updated = ncs.map(n => (n.id === nc.id ? ({
+        ...n,
+        ...nc,
+        description: sanitizeInput(nc.description || n.description),
+        rootCause: sanitizeInput(nc.rootCause || n.rootCause),
+        assignedTo: sanitizeInput(nc.assignedTo || n.assignedTo),
+      } as NonConformity) : n));
     } else {
       const newNC: NonConformity = {
         id: nc.id || `NC-${String(ncs.length + 1).padStart(3, "0")}`,
         dept: nc.dept || "General",
-        description: nc.description || "Unspecified Non-Conformity",
+        description: sanitizeInput(nc.description || "Unspecified Non-Conformity"),
         severity: nc.severity || "Minor",
-        rootCause: nc.rootCause || "Under Investigation",
-        assignedTo: nc.assignedTo || "Department Incharge",
+        rootCause: sanitizeInput(nc.rootCause || "Under Investigation"),
+        assignedTo: sanitizeInput(nc.assignedTo || "Department Incharge"),
         dueDate: nc.dueDate || new Date(Date.now() + 14 * 86400000).toISOString().slice(0, 10),
         status: nc.status || "Open",
         chapter: nc.chapter || "AAC",
@@ -210,13 +234,18 @@ export const AuditService = {
     const capas = await this.getCAPAs();
     let updated: CAPA[];
     if (capa.id && capas.some(c => c.id === capa.id)) {
-      updated = capas.map(c => (c.id === capa.id ? ({ ...c, ...capa } as CAPA) : c));
+      updated = capas.map(c => (c.id === capa.id ? ({
+        ...c,
+        ...capa,
+        action: sanitizeInput(capa.action || c.action),
+        responsible: sanitizeInput(capa.responsible || c.responsible),
+      } as CAPA) : c));
     } else {
       const newCAPA: CAPA = {
         id: capa.id || `CAPA-${String(1000 + capas.length + 1)}`,
         ncId: capa.ncId || "General-NC",
-        action: capa.action || "Corrective action pending details",
-        responsible: capa.responsible || "Quality Officer",
+        action: sanitizeInput(capa.action || "Corrective action pending details"),
+        responsible: sanitizeInput(capa.responsible || "Quality Officer"),
         dueDate: capa.dueDate || new Date(Date.now() + 21 * 86400000).toISOString().slice(0, 10),
         status: capa.status || "Open",
         created: new Date().toISOString().slice(0, 10),

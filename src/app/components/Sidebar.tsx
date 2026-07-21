@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, Building2, ClipboardList, BookOpen, AlertTriangle,
   Wrench, BarChart3, ChevronLeft, ChevronRight, LogOut,
-  Hospital, Bell, TrendingUp, Settings, X
+  Hospital, Bell, TrendingUp, Settings, X, Menu
 } from "lucide-react";
 import { useAudit } from "../context/AuditContext";
 import { toast } from "sonner";
@@ -22,11 +22,13 @@ interface SidebarProps {
   onNavigate: (page: Page) => void;
   userRole: string;
   onLogout: () => void;
+  mobileOpen?: boolean;
+  onCloseMobile?: () => void;
 }
 
 const LOGO_URL = "https://www.hvdeh.org/_next/image?url=%2Flogo.jpg&w=1080&q=75";
 
-export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: SidebarProps) {
+export function Sidebar({ currentPage, onNavigate, userRole, onLogout, mobileOpen = false, onCloseMobile }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const { departments, audits, nonConformities, capas } = useAudit();
 
@@ -44,146 +46,163 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
     { id: "management", label: "Management View", icon: TrendingUp },
   ];
 
+  const handleNavClick = (page: Page) => {
+    onNavigate(page);
+    if (onCloseMobile) onCloseMobile();
+  };
+
   return (
-    <div
-      style={{
-        width: collapsed ? "72px" : "260px",
-        minHeight: "100vh",
-        background: "#0a1628",
-        display: "flex",
-        flexDirection: "column",
-        transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
-        flexShrink: 0,
-        position: "relative",
-        zIndex: 10,
-        boxShadow: "4px 0 20px rgba(0,0,0,0.12)",
-      }}
-    >
-      {/* Left Top Header Logo - Kept Original as Requested */}
-      <div style={{
-        padding: collapsed ? "20px 16px" : "20px 18px",
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
-        display: "flex",
-        alignItems: "center",
-        gap: "12px",
-        overflow: "hidden",
-      }}>
-        <div style={{
-          width: "36px", height: "36px", borderRadius: "10px",
-          background: "linear-gradient(135deg, #0066CC 0%, #004499 100%)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0, boxShadow: "0 4px 12px rgba(0,102,204,0.3)"
-        }}>
-          <Hospital size={20} color="white" />
-        </div>
-        {!collapsed && (
-          <div style={{ overflow: "hidden" }}>
-            <div style={{ fontSize: "13px", fontWeight: 700, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>MediCare Hospital</div>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", whiteSpace: "nowrap" }}>NABH QMS v3.0 • Live</div>
-          </div>
-        )}
-      </div>
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {mobileOpen && (
+        <div
+          onClick={onCloseMobile}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 45 }}
+        />
+      )}
 
-      {/* Collapse Toggle */}
-      <button
-        onClick={() => setCollapsed(!collapsed)}
+      <div
         style={{
-          position: "absolute", top: "24px", right: "-12px",
-          width: "24px", height: "24px", borderRadius: "50%",
-          background: "#0066CC", border: "2px solid #0a1628",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          cursor: "pointer", zIndex: 20, color: "white",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-          transition: "transform 0.2s"
+          width: collapsed ? "72px" : "260px",
+          minHeight: "100vh",
+          background: "#0a1628",
+          display: "flex",
+          flexDirection: "column",
+          transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+          flexShrink: 0,
+          position: "relative",
+          zIndex: 50,
+          boxShadow: "4px 0 20px rgba(0,0,0,0.12)",
         }}
-        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        className={mobileOpen ? "mobile-sidebar-open" : ""}
       >
-        {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
-      </button>
-
-      {/* Nav Menu */}
-      <nav style={{ flex: 1, padding: "12px 0", overflowY: "auto" }}>
-        {!collapsed && (
-          <div style={{ padding: "8px 20px 6px", fontSize: "10px", fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "1px", textTransform: "uppercase" }}>
-            Main Navigation
+        {/* Left Top Header Logo */}
+        <div style={{
+          padding: collapsed ? "20px 16px" : "20px 18px",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
+          display: "flex",
+          alignItems: "center",
+          gap: "12px",
+          overflow: "hidden",
+        }}>
+          <div style={{
+            width: "36px", height: "36px", borderRadius: "10px",
+            background: "linear-gradient(135deg, #0066CC 0%, #004499 100%)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0, boxShadow: "0 4px 12px rgba(0,102,204,0.3)"
+          }}>
+            <Hospital size={20} color="white" />
           </div>
-        )}
-        {NAV_ITEMS.map(item => {
-          const Icon = item.icon;
-          const active = currentPage === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              style={{
-                width: "100%", display: "flex", alignItems: "center",
-                gap: "12px", padding: collapsed ? "12px 18px" : "10px 20px",
-                background: active ? "rgba(0,102,204,0.25)" : "transparent",
-                border: "none", cursor: "pointer",
-                borderLeft: active ? "3px solid #0066CC" : "3px solid transparent",
-                transition: "all 0.15s ease", position: "relative",
-                justifyContent: collapsed ? "center" : "flex-start",
-              }}
-              title={collapsed ? item.label : undefined}
-            >
-              <Icon size={18} color={active ? "#60a5fa" : "rgba(255,255,255,0.55)"} style={{ flexShrink: 0 }} />
-              {!collapsed && (
-                <>
-                  <span style={{ fontSize: "13px", color: active ? "#ffffff" : "rgba(255,255,255,0.65)", fontWeight: active ? 600 : 400, flex: 1, textAlign: "left", whiteSpace: "nowrap" }}>
-                    {item.label}
-                  </span>
-                  {Boolean(item.badge) && (
-                    <span style={{
-                      fontSize: "10px", fontWeight: 700,
-                      background: active ? "#0066CC" : "rgba(255,255,255,0.12)",
-                      color: active ? "white" : "#94a3b8",
-                      borderRadius: "10px", padding: "2px 7px", minWidth: "20px", textAlign: "center"
-                    }}>
-                      {item.badge}
-                    </span>
-                  )}
-                </>
-              )}
-            </button>
-          );
-        })}
-      </nav>
-
-      {/* User Footer (Left Bottom) */}
-      <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "12px" }}>
-        {!collapsed && (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", borderRadius: "10px", background: "rgba(255,255,255,0.05)", marginBottom: "8px" }}>
-            <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#0066CC", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700, color: "white", fontSize: "12px" }}>
-              {userRole.slice(0, 2).toUpperCase()}
-            </div>
+          {!collapsed && (
             <div style={{ overflow: "hidden" }}>
-              <div style={{ fontSize: "12px", fontWeight: 600, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userRole}</div>
-              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>Logged In User</div>
+              <div style={{ fontSize: "13px", fontWeight: 700, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>MediCare Hospital</div>
+              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", whiteSpace: "nowrap" }}>NABH QMS v3.0 • Live</div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
+
+        {/* Collapse Toggle */}
         <button
-          onClick={onLogout}
+          onClick={() => setCollapsed(!collapsed)}
           style={{
-            width: "100%", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start",
-            gap: "10px", padding: "8px 10px", background: "transparent", border: "none",
-            cursor: "pointer", borderRadius: "8px", color: "rgba(255,255,255,0.45)",
-            transition: "all 0.15s"
+            position: "absolute", top: "24px", right: "-12px",
+            width: "24px", height: "24px", borderRadius: "50%",
+            background: "#0066CC", border: "2px solid #0a1628",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", zIndex: 20, color: "white",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+            transition: "transform 0.2s"
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = "rgba(239,68,68,0.15)")}
-          onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          <LogOut size={16} />
-          {!collapsed && <span style={{ fontSize: "13px" }}>Sign Out</span>}
+          {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
         </button>
+
+        {/* Nav Menu */}
+        <nav style={{ flex: 1, padding: "12px 0", overflowY: "auto" }}>
+          {!collapsed && (
+            <div style={{ padding: "8px 20px 6px", fontSize: "10px", fontWeight: 600, color: "rgba(255,255,255,0.35)", letterSpacing: "1px", textTransform: "uppercase" }}>
+              Main Navigation
+            </div>
+          )}
+          {NAV_ITEMS.map(item => {
+            const Icon = item.icon;
+            const active = currentPage === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                style={{
+                  width: "100%", display: "flex", alignItems: "center",
+                  gap: "12px", padding: collapsed ? "12px 18px" : "10px 20px",
+                  background: active ? "rgba(0,102,204,0.25)" : "transparent",
+                  border: "none", cursor: "pointer",
+                  borderLeft: active ? "3px solid #0066CC" : "3px solid transparent",
+                  transition: "all 0.15s ease", position: "relative",
+                  justifyContent: collapsed ? "center" : "flex-start",
+                }}
+                title={collapsed ? item.label : undefined}
+              >
+                <Icon size={18} color={active ? "#60a5fa" : "rgba(255,255,255,0.55)"} style={{ flexShrink: 0 }} />
+                {!collapsed && (
+                  <>
+                    <span style={{ fontSize: "13px", color: active ? "#ffffff" : "rgba(255,255,255,0.65)", fontWeight: active ? 600 : 400, flex: 1, textAlign: "left", whiteSpace: "nowrap" }}>
+                      {item.label}
+                    </span>
+                    {Boolean(item.badge) && (
+                      <span style={{
+                        fontSize: "10px", fontWeight: 700,
+                        background: active ? "#0066CC" : "rgba(255,255,255,0.12)",
+                        color: active ? "white" : "#94a3b8",
+                        borderRadius: "10px", padding: "2px 7px", minWidth: "20px", textAlign: "center"
+                      }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
+                )}
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* User Footer (Left Bottom) */}
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", padding: "12px" }}>
+          {!collapsed && (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", borderRadius: "10px", background: "rgba(255,255,255,0.05)", marginBottom: "8px" }}>
+              <div style={{ width: "34px", height: "34px", borderRadius: "50%", background: "#0066CC", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontWeight: 700, color: "white", fontSize: "12px" }}>
+                {userRole.slice(0, 2).toUpperCase()}
+              </div>
+              <div style={{ overflow: "hidden" }}>
+                <div style={{ fontSize: "12px", fontWeight: 600, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{userRole}</div>
+                <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.4)" }}>Logged In User</div>
+              </div>
+            </div>
+          )}
+          <button
+            onClick={onLogout}
+            style={{
+              width: "100%", display: "flex", alignItems: "center", justifyContent: collapsed ? "center" : "flex-start",
+              gap: "10px", padding: "8px 10px", background: "transparent", border: "none",
+              cursor: "pointer", borderRadius: "8px", color: "rgba(255,255,255,0.45)",
+              transition: "all 0.15s"
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(239,68,68,0.15)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
+          >
+            <LogOut size={16} />
+            {!collapsed && <span style={{ fontSize: "13px" }}>Sign Out</span>}
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
 interface TopBarProps {
   page: Page;
   userRole?: string;
+  onToggleMobileMenu?: () => void;
 }
 
 const PAGE_TITLES: Record<Page, string> = {
@@ -197,7 +216,7 @@ const PAGE_TITLES: Record<Page, string> = {
   management: "Management View",
 };
 
-export function TopBar({ page }: TopBarProps) {
+export function TopBar({ page, onToggleMobileMenu }: TopBarProps) {
   const [showNotifs, setShowNotifs] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { notifications, markNotificationRead, exportDataToCSV } = useAudit();
@@ -211,9 +230,20 @@ export function TopBar({ page }: TopBarProps) {
       display: "flex", alignItems: "center", justifyContent: "space-between",
       padding: "0 24px", flexShrink: 0, gap: "16px", zIndex: 5, position: "relative"
     }}>
-      <div>
-        <h1 style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b", margin: 0 }}>{PAGE_TITLES[page]}</h1>
-        <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 500 }}>{today} • NABH 5th Edition Accreditation</div>
+      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        {onToggleMobileMenu && (
+          <button
+            onClick={onToggleMobileMenu}
+            style={{ background: "#f1f5f9", border: "none", borderRadius: "8px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#1e293b" }}
+            title="Toggle Menu"
+          >
+            <Menu size={18} />
+          </button>
+        )}
+        <div>
+          <h1 style={{ fontSize: "18px", fontWeight: 700, color: "#1e293b", margin: 0 }}>{PAGE_TITLES[page]}</h1>
+          <div style={{ fontSize: "11px", color: "#64748b", fontWeight: 500 }}>{today} • NABH 5th Edition Accreditation</div>
+        </div>
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>

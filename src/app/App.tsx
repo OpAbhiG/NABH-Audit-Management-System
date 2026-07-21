@@ -15,6 +15,7 @@ import { Toaster } from "sonner";
 function MainAppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>("dashboard");
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { userRole, setUserRole } = useAudit();
 
   const handleLogin = (role: string) => {
@@ -69,10 +70,16 @@ function MainAppContent() {
         onNavigate={setCurrentPage}
         userRole={userRole}
         onLogout={handleLogout}
+        mobileOpen={mobileOpen}
+        onCloseMobile={() => setMobileOpen(false)}
       />
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
-        <TopBar page={currentPage} userRole={userRole} />
-        <main style={{ flex: 1, overflowY: "auto", transition: "opacity 0.2s ease-in-out" }}>
+        <TopBar
+          page={currentPage}
+          userRole={userRole}
+          onToggleMobileMenu={() => setMobileOpen(!mobileOpen)}
+        />
+        <main className="page-fade-enter" key={currentPage} style={{ flex: 1, overflowY: "auto" }}>
           {renderPage()}
         </main>
       </div>
