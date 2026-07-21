@@ -43,29 +43,29 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center p-16 text-white">
         <div className="max-w-md">
-          {/* Logo outside avatar frame, clean and readable without redundant text */}
+          {/* Logo outside avatar frame */}
           <div className="mb-8">
             <img
               src={LOGO_URL}
               alt="PBMA's H V Desai Eye Hospital Logo"
               style={{
-                maxHeight: "80px",
-                maxWidth: "300px",
+                maxHeight: "85px",
+                maxWidth: "320px",
                 objectFit: "contain",
                 background: "white",
-                padding: "8px 16px",
+                padding: "10px 18px",
                 borderRadius: "12px",
                 boxShadow: "0 10px 25px rgba(0,0,0,0.25)"
               }}
             />
           </div>
 
-          <h2 className="text-white mb-4" style={{ fontSize: "34px", fontWeight: 800, lineHeight: 1.3 }}>
-            NABH Audit & Quality<br />Management Platform
+          <h2 className="text-white mb-4" style={{ fontSize: "32px", fontWeight: 800, lineHeight: 1.3 }}>
+            PBMA's H V Desai Eye Hospital<br />NABH Quality & Audit Platform
           </h2>
           <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.7, marginBottom: "36px" }}>
-            Enterprise-grade internal audit management complying with NABH 5th Edition Standards.
-            Monitor departmental performance, track non-conformities, and manage CAPA workflows.
+            Comprehensive internal audit management system complying with NABH 5th Edition Standards.
+            Monitor departmental performance, evaluate compliance checklists, track non-conformities, and manage CAPA resolution workflows.
           </p>
           <div className="grid grid-cols-2 gap-4">
             {[
@@ -92,11 +92,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               src={LOGO_URL}
               alt="H V Desai Eye Hospital Logo"
               style={{
-                maxHeight: "60px",
-                maxWidth: "240px",
+                maxHeight: "65px",
+                maxWidth: "250px",
                 objectFit: "contain",
                 background: "white",
-                padding: "6px 14px",
+                padding: "8px 16px",
                 borderRadius: "10px",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
               }}
