@@ -43,17 +43,23 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* Left Panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-center items-center p-16 text-white">
         <div className="max-w-md">
-          <div className="flex items-center gap-4 mb-8">
+          {/* Logo outside avatar frame, clean and readable without redundant text */}
+          <div className="mb-8">
             <img
               src={LOGO_URL}
-              alt="H V Desai Eye Hospital Logo"
-              style={{ width: "64px", height: "64px", borderRadius: "16px", objectFit: "cover", border: "2px solid rgba(255,255,255,0.4)", background: "white", padding: "2px", boxShadow: "0 8px 20px rgba(0,0,0,0.3)" }}
+              alt="PBMA's H V Desai Eye Hospital Logo"
+              style={{
+                maxHeight: "80px",
+                maxWidth: "300px",
+                objectFit: "contain",
+                background: "white",
+                padding: "8px 16px",
+                borderRadius: "12px",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.25)"
+              }}
             />
-            <div>
-              <h1 className="text-white" style={{ fontSize: "26px", fontWeight: 800, lineHeight: 1.2 }}>PBMA's H V Desai Eye Hospital</h1>
-              <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "14px", fontWeight: 500 }}>NABH Quality & Accreditation System</p>
-            </div>
           </div>
+
           <h2 className="text-white mb-4" style={{ fontSize: "34px", fontWeight: 800, lineHeight: 1.3 }}>
             NABH Audit & Quality<br />Management Platform
           </h2>
@@ -80,13 +86,21 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       {/* Right Panel - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8" style={{ background: "#f8fafc" }}>
         <div className="w-full max-w-md">
-          {/* Mobile Header */}
-          <div className="lg:hidden flex items-center gap-3 mb-8 justify-center">
-            <img src={LOGO_URL} alt="HVDEH Logo" style={{ width: "44px", height: "44px", borderRadius: "12px", objectFit: "cover" }} />
-            <div>
-              <div style={{ fontWeight: 800, fontSize: "16px", color: "#1e293b" }}>H V Desai Eye Hospital</div>
-              <div style={{ fontSize: "12px", color: "#64748b" }}>NABH Quality System</div>
-            </div>
+          {/* Mobile Header Logo */}
+          <div className="lg:hidden flex justify-center mb-8">
+            <img
+              src={LOGO_URL}
+              alt="H V Desai Eye Hospital Logo"
+              style={{
+                maxHeight: "60px",
+                maxWidth: "240px",
+                objectFit: "contain",
+                background: "white",
+                padding: "6px 14px",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
+              }}
+            />
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
