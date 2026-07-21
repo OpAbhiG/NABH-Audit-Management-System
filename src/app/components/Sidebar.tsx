@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, Building2, ClipboardList, BookOpen, AlertTriangle,
   Wrench, BarChart3, ChevronLeft, ChevronRight, LogOut,
-  User, Bell, TrendingUp, Settings, X
+  Bell, TrendingUp, Settings, X
 } from "lucide-react";
 import { useAudit } from "../context/AuditContext";
 import { toast } from "sonner";
@@ -70,15 +70,11 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
       }}>
         <img
           src={LOGO_URL}
-          alt="H V Desai Eye Hospital Logo"
+          alt="Logo"
           style={{
             width: "36px", height: "36px", borderRadius: "50%",
             objectFit: "cover", flexShrink: 0, border: "2px solid #0066CC",
             background: "white", padding: "1px", boxShadow: "0 4px 12px rgba(0,102,204,0.3)"
-          }}
-          onError={(e) => {
-            // Fallback if image fails to load
-            (e.target as HTMLElement).style.display = "none";
           }}
         />
         {!collapsed && (
@@ -188,7 +184,7 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
 
 interface TopBarProps {
   page: Page;
-  userRole: string;
+  userRole?: string;
 }
 
 const PAGE_TITLES: Record<Page, string> = {
@@ -283,21 +279,18 @@ export function TopBar({ page }: TopBarProps) {
           <Settings size={16} />
         </button>
 
-        {/* Top Right Hospital Logo & Branding Avatar (Replaced duplicate userRole) */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", paddingLeft: "12px", borderLeft: "1px solid #e2e8f0" }}>
+        {/* Top Right Hospital Logo Image Icon Only */}
+        <div style={{ display: "flex", alignItems: "center", paddingLeft: "12px", borderLeft: "1px solid #e2e8f0" }}>
           <img
             src={LOGO_URL}
-            alt="H V Desai Eye Hospital Logo"
+            alt="Hospital Logo Icon"
             style={{
               width: "36px", height: "36px", borderRadius: "50%",
               objectFit: "cover", border: "2px solid #0066CC", background: "white", padding: "1px",
-              boxShadow: "0 2px 8px rgba(0,102,204,0.2)"
+              boxShadow: "0 2px 8px rgba(0,102,204,0.2)", cursor: "pointer"
             }}
+            title="PBMA's H V Desai Eye Hospital"
           />
-          <div>
-            <div style={{ fontSize: "12px", fontWeight: 700, color: "#1e293b", lineHeight: 1.2 }}>H V Desai Eye Hospital</div>
-            <div style={{ fontSize: "10px", color: "#0066CC", fontWeight: 600 }}>NABH Quality System</div>
-          </div>
         </div>
       </div>
 
