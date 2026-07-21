@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   LayoutDashboard, Building2, ClipboardList, BookOpen, AlertTriangle,
   Wrench, BarChart3, ChevronLeft, ChevronRight, LogOut,
-  Bell, TrendingUp, Settings, X
+  Hospital, Bell, TrendingUp, Settings, X
 } from "lucide-react";
 import { useAudit } from "../context/AuditContext";
 import { toast } from "sonner";
@@ -59,7 +59,7 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
         boxShadow: "4px 0 20px rgba(0,0,0,0.12)",
       }}
     >
-      {/* Header Logo */}
+      {/* Left Top Header Logo - Kept Original as Requested */}
       <div style={{
         padding: collapsed ? "20px 16px" : "20px 18px",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
@@ -68,19 +68,18 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout }: Sidebar
         gap: "12px",
         overflow: "hidden",
       }}>
-        <img
-          src={LOGO_URL}
-          alt="Logo"
-          style={{
-            width: "36px", height: "36px", borderRadius: "50%",
-            objectFit: "cover", flexShrink: 0, border: "2px solid #0066CC",
-            background: "white", padding: "1px", boxShadow: "0 4px 12px rgba(0,102,204,0.3)"
-          }}
-        />
+        <div style={{
+          width: "36px", height: "36px", borderRadius: "10px",
+          background: "linear-gradient(135deg, #0066CC 0%, #004499 100%)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexShrink: 0, boxShadow: "0 4px 12px rgba(0,102,204,0.3)"
+        }}>
+          <Hospital size={20} color="white" />
+        </div>
         {!collapsed && (
           <div style={{ overflow: "hidden" }}>
-            <div style={{ fontSize: "13px", fontWeight: 700, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>HV Desai Eye Hospital</div>
-            <div style={{ fontSize: "10px", color: "#60a5fa", fontWeight: 600, whiteSpace: "nowrap" }}>NABH Quality System v3.0</div>
+            <div style={{ fontSize: "13px", fontWeight: 700, color: "white", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>MediCare Hospital</div>
+            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.5)", whiteSpace: "nowrap" }}>NABH QMS v3.0 • Live</div>
           </div>
         )}
       </div>
@@ -279,15 +278,17 @@ export function TopBar({ page }: TopBarProps) {
           <Settings size={16} />
         </button>
 
-        {/* Top Right Hospital Logo Image Icon Only */}
+        {/* Top Right Logo Image Displayed Outside Circular Avatar Clip */}
         <div style={{ display: "flex", alignItems: "center", paddingLeft: "12px", borderLeft: "1px solid #e2e8f0" }}>
           <img
             src={LOGO_URL}
-            alt="Hospital Logo Icon"
+            alt="H V Desai Eye Hospital Logo"
             style={{
-              width: "36px", height: "36px", borderRadius: "50%",
-              objectFit: "cover", border: "2px solid #0066CC", background: "white", padding: "1px",
-              boxShadow: "0 2px 8px rgba(0,102,204,0.2)", cursor: "pointer"
+              maxHeight: "38px",
+              maxWidth: "150px",
+              objectFit: "contain",
+              cursor: "pointer",
+              borderRadius: "4px"
             }}
             title="PBMA's H V Desai Eye Hospital"
           />
