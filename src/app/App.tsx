@@ -15,6 +15,7 @@ import { Toaster } from "sonner";
 function MainAppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState<Page>("dashboard");
+  const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { userRole, setUserRole } = useAudit();
 
@@ -34,6 +35,14 @@ function MainAppContent() {
     setIsLoggedIn(false);
     setUserRole("Quality Manager");
     setCurrentPage("dashboard");
+  };
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 1024) {
+      setMobileOpen(!mobileOpen);
+    } else {
+      setCollapsed(!collapsed);
+    }
   };
 
   if (!isLoggedIn) {
@@ -70,6 +79,8 @@ function MainAppContent() {
         onNavigate={setCurrentPage}
         userRole={userRole}
         onLogout={handleLogout}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed(!collapsed)}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
       />
@@ -77,7 +88,7 @@ function MainAppContent() {
         <TopBar
           page={currentPage}
           userRole={userRole}
-          onToggleMobileMenu={() => setMobileOpen(!mobileOpen)}
+          onToggleSidebar={handleToggleSidebar}
         />
         <main className="page-fade-enter" key={currentPage} style={{ flex: 1, overflowY: "auto" }}>
           {renderPage()}

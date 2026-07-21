@@ -22,14 +22,24 @@ interface SidebarProps {
   onNavigate: (page: Page) => void;
   userRole: string;
   onLogout: () => void;
-  mobileOpen?: boolean;
-  onCloseMobile?: () => void;
+  collapsed: boolean;
+  onToggleCollapse: () => void;
+  mobileOpen: boolean;
+  onCloseMobile: () => void;
 }
 
 const LOGO_URL = "https://www.hvdeh.org/_next/image?url=%2Flogo.jpg&w=1080&q=75";
 
-export function Sidebar({ currentPage, onNavigate, userRole, onLogout, mobileOpen = false, onCloseMobile }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
+export function Sidebar({
+  currentPage,
+  onNavigate,
+  userRole,
+  onLogout,
+  collapsed,
+  onToggleCollapse,
+  mobileOpen,
+  onCloseMobile,
+}: SidebarProps) {
   const { departments, audits, nonConformities, capas } = useAudit();
 
   const openNCs = nonConformities.filter(n => n.status !== "Closed").length;
@@ -53,7 +63,7 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout, mobileOpe
 
   return (
     <>
-      {/* Mobile Backdrop Overlay */}
+      {/* Mobile Backdrop Overlay (only active on mobile when drawer is open) */}
       {mobileOpen && (
         <div
           onClick={onCloseMobile}
@@ -74,7 +84,7 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout, mobileOpe
           zIndex: 50,
           boxShadow: "4px 0 20px rgba(0,0,0,0.12)",
         }}
-        className={mobileOpen ? "mobile-sidebar-open" : ""}
+        className={`sidebar-container ${mobileOpen ? "mobile-sidebar-open" : ""}`}
       >
         {/* Left Top Header Logo */}
         <div style={{
@@ -101,9 +111,9 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout, mobileOpe
           )}
         </div>
 
-        {/* Collapse Toggle */}
+        {/* Collapse Toggle Chevron */}
         <button
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={onToggleCollapse}
           style={{
             position: "absolute", top: "24px", right: "-12px",
             width: "24px", height: "24px", borderRadius: "50%",
@@ -202,7 +212,7 @@ export function Sidebar({ currentPage, onNavigate, userRole, onLogout, mobileOpe
 interface TopBarProps {
   page: Page;
   userRole?: string;
-  onToggleMobileMenu?: () => void;
+  onToggleSidebar?: () => void;
 }
 
 const PAGE_TITLES: Record<Page, string> = {
@@ -216,7 +226,7 @@ const PAGE_TITLES: Record<Page, string> = {
   management: "Management View",
 };
 
-export function TopBar({ page, onToggleMobileMenu }: TopBarProps) {
+export function TopBar({ page, onToggleSidebar }: TopBarProps) {
   const [showNotifs, setShowNotifs] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const { notifications, markNotificationRead, exportDataToCSV } = useAudit();
@@ -231,11 +241,15 @@ export function TopBar({ page, onToggleMobileMenu }: TopBarProps) {
       padding: "0 24px", flexShrink: 0, gap: "16px", zIndex: 5, position: "relative"
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        {onToggleMobileMenu && (
+        {onToggleSidebar && (
           <button
-            onClick={onToggleMobileMenu}
-            style={{ background: "#f1f5f9", border: "none", borderRadius: "8px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#1e293b" }}
-            title="Toggle Menu"
+            onClick={onToggleSidebar}
+            style={{
+              background: "#f1f5f9", border: "1px solid #cbd5e1", borderRadius: "8px",
+              width: "36px", height: "36px", display: "flex", alignItems: "center",
+              justifyContent: "center", cursor: "pointer", color: "#1e293b", transition: "all 0.15s"
+            }}
+            title="Toggle Sidebar Navigation"
           >
             <Menu size={18} />
           </button>
